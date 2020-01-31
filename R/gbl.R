@@ -30,9 +30,9 @@
 #' \itemize{
 #' \item{\code{"GBLc"}} The unmodified (unbalanced) covariance estimator provided by \code{\link{gblc}}
 #' \item{\code{"GBLemp"}} Empirical gliding box lacunarity (Allain and Cloitre, 1991). Calls \code{\link{gblemp}}
-#' \item{\code{"GBLg.mattfeldt"}} See help for \code{\link{gblg}}
-#' \item{\code{"GBLg.pickaint"}} See help for \code{\link{gblg}}
-#' \item{\code{"GBLg.pickaH"}} See help for \code{\link{gblg}}
+#' \item{\code{"GBLg.mattfeldt"}} See help for \code{\link{gblg}} and \code{\link{paircorr}}
+#' \item{\code{"GBLg.pickaint"}} See help for \code{\link{gblg}} and \code{\link{paircorr}}
+#' \item{\code{"GBLg.pickaH"}} See help for \code{\link{gblg}} and \code{\link{paircorr}}
 #' \item{\code{"GBLcc.mattfeldt"}} See help for \code{\link{gblcc}}
 #' \item{\code{"GBLcc.pickaint"}} See help for \code{\link{gblcc}}
 #' \item{\code{"GBLcc.pickaH"}} See help for \code{\link{gblcc}}
@@ -68,8 +68,7 @@ gbl <- function(xi, boxwidths,
                 includenormed = FALSE,
                 setcov_boundarythresh = 1E-6){
   if ("all" %in% estimators){
-    estimators = c("GBLg.mattfeldt", "GBLg.pickaint", "GBLg.pickaH",
-     "GBLcc.mattfeldt", "GBLcc.pickaint", "GBLcc.pickaH",
+    estimators = c(GBLgestimatornames, GBLccestimatornames, 
      "GBLc", "GBLemp")
   }
   gblgestimaterequests <- estimators %in% GBLgestimatornames
@@ -143,10 +142,10 @@ gbl.cvchat <- function(boxwidths,
                       cvchat = NULL,
                       cpp1 = NULL){
   if ("all" %in% estimators){
-    estimators = c("GBLg.mattfeldt", "GBLg.pickaint", "GBLg.pickaH",
-     "GBLcc.mattfeldt", "GBLcc.pickaint",
-     "GBLc")
+    estimators = c(GBLgestimatornames, GBLccestimatornames, 
+     "GBLc", "GBLemp")
   }
+  
   gblgestimaterequests <- estimators %in% GBLgestimatornames
   gblccestimaterequests <- estimators %in% GBLccestimatornames
   gblgs <- gblccs <- gblc.est <- gblemp.est <- NULL

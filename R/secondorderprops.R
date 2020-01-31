@@ -87,7 +87,7 @@ secondorderprops <- function(xiim,
         x <- tweak.fv.entry(x, "f", new.labl = "C(r)", new.desc = "isotropic covariance", new.tag = "C")
         return(x)
       })
-      isocovars <- collapse.fv(isocovars, different = "C")
+      isocovars <- collapse.fv(harmonise.fv(isocovars), different = "C")
       cvchats <- isocovars
     }
     outlist <- c(outlist, list(covariance = cvchats))
@@ -102,7 +102,7 @@ secondorderprops <- function(xiim,
         x <- tweak.fv.entry(x, "f", new.labl = "k(r)", new.desc = "isotropic centred covariance", new.tag = "C")
         return(x)
       })
-      isocencovars <- collapse.fv(isocencovars, different = "C")
+      isocencovars <- collapse.fv(harmonise.fv(isocencovars), different = "C")
       ccvchats <- isocencovars
     }
     outlist <- c(outlist, list(cencovariance = ccvchats))
@@ -112,12 +112,12 @@ secondorderprops <- function(xiim,
     pclnests <- do.call(paircorr.cvchat, c(list(cvchat = cvchatT, cpp1 = cpp1, phat = phat), paircorrargs, drop = FALSE))
     #compute isotropic pair correlation
     if (returnrotmean){
-      isopclns <- lapply(pclnests, rotmean, padzero = FALSE, Xname = "covar", result = "fv")
+      isopclns <- lapply(pclnests, rotmean, padzero = FALSE, Xname = "paircorr", result = "fv")
       isopclns <- lapply(isopclns, function(x) {
         x <- tweak.fv.entry(x, "f", new.labl = "g(r)", new.desc = "isotropic pair-correlation", new.tag = "g")
         return(x)
       })
-      isopclns <- collapse.fv(isopclns, different = "g")
+      isopclns <- collapse.fv(harmonise.fv(isopclns), different = "g")
       pclnests <- isopclns
     }
     outlist <- c(outlist, list(paircorr = pclnests))

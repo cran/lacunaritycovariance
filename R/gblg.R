@@ -65,7 +65,7 @@ gblg <- function(boxes, paircorr = NULL, xiim = NULL){
     lacv <- gblg.inputpaircorr(boxes, paircorr)
     unitname <- unitname(xiim)
   } else {
-    stop("Input requires specification of xiim or paircorr and p")
+    stop("Input requires specification of xiim or paircorr")
   }
 
   if (mode(boxes) %in% c("integer", "numeric")){
@@ -96,9 +96,9 @@ gblg.inputpaircorr <- function(boxes, paircorr){
     boxarea <- unlist(boxarea)
   }
 
-  integrationresults <- mapply(innerprod.im, boxcov, list(paircorr), outsideA = 0, outsideB = NA, na.rm = FALSE, SIMPLIFY = FALSE) # the list around the paircorr is necessary to stop mapply unlisting the image itself
+  integrationresults <- mapply(innerprod.im, boxcov, list(paircorr - 1), outsideA = 0, outsideB = NA, na.rm = FALSE, SIMPLIFY = FALSE) # the list around the paircorr is necessary to stop mapply unlisting the image itself
 
-  GBLest <- unlist(integrationresults) / (boxarea ^ 2) 
+  GBLest <- 1 + unlist(integrationresults) / (boxarea ^ 2) 
   return(GBLest)
 }
 
