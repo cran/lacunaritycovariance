@@ -39,7 +39,8 @@ plot(pclnest, main = "Pair Correlation Estimate")
 ###################################################
 ### code chunk number 5: gblestimation
 ###################################################
-gblest <- gbl(xi = egbinarymap, seq(1, 200/4, by = 1))
+gblest <- gbl(xi = egbinarymap, seq(1, 200/4, by = 1), 
+	      estimators = c("GBLcc.pickaH", "GBLemp"))
 plot(gblest[[1]], main = "GBL Estimate")
 
 

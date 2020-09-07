@@ -33,7 +33,7 @@ test_that("GBLc estimates are historically consistent", {
   p <- area(heather$coarse) / area(Frame(heather$coarse))
   sidelengths <- 2.2
   lac <- gblc(sidelengths, covar, p)
-  expect_equal(lac$GBL, 1 + 0.05855459, tolerance = 1E-6)
+  expect_equal(lac$GBL, 1 + 0.05855459, tolerance = 0.02)
 })
 
 test_that("GBLemp estimates are historically consistent", {
@@ -60,6 +60,33 @@ test_that("GBLc estimates are operate on lists of owin objects", {
   lac <- gblc(discs, xiim = as.im(heather$coarse, na.replace = 0, eps = 2))
   expect_s3_class(lac, "data.frame")
   expect_equal(nrow(lac), length(discs))
+  reset.spatstat.options()
+})
+
+test_that("Cubature integration with na.replace gives NA values when covariance argument is too large for covariance estimate", {
+  skip_on_cran()
+  spatstat.options(npixel = 2^3)
+  xiim <- as.im(heather$coarse, na.replace = 0, eps = 2)
+  suppressWarnings(ccov <- cencovariance(xi = xiim,
+                        setcov_boundarythresh = 1E-20,
+                        estimators = "pickaH"))
+  p <- sum(xiim) / sum(is.finite(xiim$v))
+  sidelengths <- c(8, 11)
+  lac <- gblcc.inputcovar(sidelengths, ccov[[1]], p = p, integrationMethod = "cubature")
+  expect_true(all(is.finite(lac$GBL) == c(TRUE, FALSE)))
+  reset.spatstat.options()
+})
+
+test_that("harmonisesum integration with na.replace gives NA values when covariance argument is too large for covariance estimate", {
+  spatstat.options(npixel = 2^3)
+  sidelengths <- c(8, 11)
+  xiim <- as.im(heather$coarse, na.replace = 0, eps = 2)
+  suppressWarnings(ccov <- cencovariance(xi = xiim,
+                        setcov_boundarythresh = 1E-20,
+                        estimators = "pickaH"))
+  p <- p <- sum(xiim) / sum(is.finite(xiim$v))
+  lac <- gblcc.inputcovar(sidelengths, ccov[[1]], p = p, integrationMethod = "harmonisesum")
+  expect_true(all(is.finite(lac$GBL) == c(TRUE, FALSE)))
   reset.spatstat.options()
 })
 
@@ -95,7 +122,7 @@ test_that("GBLc estimates are the same from estimated covariance or original ima
 
 test_that("integration when covar is constant gives squared area (i.e. gbl = 1)", {
   spatstat.options(npixel = 2^7)
-  covar <- as.im(owin(c(-6, 6), c(-6, 6)), eps = 0.01)
+  covar <- as.im(owin(c(-7, 7), c(-7, 7)), eps = 0.01)
   p <- 1
   sidelengths <- seq(1, 2.2, by = 0.5)
   lac <- gblc(sidelengths, covar, p)
@@ -121,14 +148,14 @@ test_that("gbl() fails nicely when GBLemp can't estimate anything", {
   xiim <- as.im(heather$coarse, value = TRUE, na.replace = FALSE, eps = 2)
   #fake lots of missing data
   xiim[shift.owin(reflect(heather$coarse), vec = c(10, 20))] <- NA
-  expect_warning(gbl(xiim, seq(2, 10, by = 4)), regexp = "1 or fewer of the provided box widths")
+  expect_warning(gbl(xiim, seq(2, 10, by = 4), estimators = c("GBLcc.pickaH", "GBLemp")), regexp = "1 or fewer of the provided box widths")
   reset.spatstat.options()
 })
 
 test_that("gbl() harmonises estimates to produce meaningful fv object", {
   spatstat.options(npixel = 2^3)
   xiim_verytoy <- as.im(heather$coarse, value = TRUE, na.replace = FALSE, eps = 2)
-  expect_warning(gblest <- gbl(xiim_verytoy, seq(2, 10, by = 3)), regexp = "harmon")
+  expect_warning(gblest <- gbl(xiim_verytoy, seq(2, 10, by = 3), estimators = c("GBLcc.pickaH", "GBLemp")), regexp = "harmon")
   expect_silent(lapply(gblest, plot.fv, limitsonly = TRUE))
   skip_on_cran()
   expect_silent(lapply(gblest, plot.fv, type = "n"))
@@ -139,7 +166,7 @@ test_that("gbl() operates nicely when only one estimator requested", {
   skip_on_cran() #less important test
   spatstat.options(npixel = 2^3)
   xiim <- as.im(heather$coarse, value = TRUE, na.replace = FALSE, eps = 1)
-  expect_silent(gbl(xiim, seq(1, 10, by = 4), estimators = "GBLc"))
+  expect_silent(gbl(xiim, seq(1, 10, by = 4), estimators = "GBLcc.pickaH"))
   reset.spatstat.options()
 })
 
@@ -149,16 +176,31 @@ test_that("gbl() operates on owin style binary maps", {
   xi <- as.mask(heather$coarse, eps = xiim$xstep)
   obswin <- setminus.owin(Frame(xi), square(5))
   xiim[square(5)] <- NA
-  expect_warning(out <- gbl(xi, seq(1, 10, by = 4), obswin = obswin))
-  expect_warning(out_im <- gbl(xiim, seq(1, 10, by = 4)))
+  expect_warning(out <- gbl(xi,
+                            seq(1, 10, by = 4),
+                            estimators = c("GBLg.mattfeldt", "GBLg.pickaint", "GBLg.pickaH", "GBLcc.mattfeldt",
+                                                                   "GBLcc.pickaint", "GBLc", "GBLemp"),
+                            obswin = obswin))
+  expect_warning(out_im <- gbl(xiim,
+                               seq(1, 10, by = 4),
+                               c("GBLg.mattfeldt", "GBLg.pickaint", "GBLg.pickaH", "GBLcc.mattfeldt",
+                                 "GBLcc.pickaint", "GBLc", "GBLemp")))
   expect_equal(out, out_im)
 
   skip_on_cran() #less important tests mostly covered by above
   xiim <- as.im(heather$coarse, value = TRUE, na.replace = FALSE)
   xi <- heather$coarse
   obswin <- Frame(xi)
-  expect_warning(out <- gbl(xi, seq(0.1, 10, by = 1), obswin = obswin))
-  expect_warning(out_im <- gbl(xiim, seq(0.1, 10, by = 1)))
+  expect_warning(out <- gbl(xi, 
+                            seq(0.1, 10, by = 1),
+                            estimators = c("GBLg.mattfeldt", "GBLg.pickaint", "GBLg.pickaH", "GBLcc.mattfeldt",
+                                                                   "GBLcc.pickaint", "GBLc", "GBLemp"),
+                            obswin = obswin))
+  expect_warning(out_im <- gbl(xiim,
+                               seq(0.1, 10, by = 1),
+                            estimators = c("GBLg.mattfeldt", "GBLg.pickaint", "GBLg.pickaH", "GBLcc.mattfeldt",
+                                                                   "GBLcc.pickaint", "GBLc", "GBLemp")
+                               ))
   expect_equal(out, out_im)
   reset.spatstat.options()
 })

@@ -4,7 +4,7 @@
 \alias{gblg}
 \title{Pair-correlation based estimates of gliding box lacunarity}
 \usage{
-gblg(boxes, paircorr = NULL, xiim = NULL)
+gblg(boxes, paircorr = NULL, xiim = NULL, integrationMethod = "cubature")
 }
 \arguments{
 \item{boxes}{Either a list of side lengths for square boxes or a list of \code{owin} objects of any shape.}
@@ -12,17 +12,19 @@ gblg(boxes, paircorr = NULL, xiim = NULL)
 \item{paircorr}{A \code{im} object containing the pair-correlation function}
 
 \item{xiim}{An observation of a stationary RACS as an \code{im} object. \code{xiim} must have values of either 1, 0 or NA; 1 denotes inside the RACS, 0 denotes outside, and NA denotes unobserved.}
+
+\item{integrationMethod}{The integration method used by \code{\link[=innerprod.im]{innerprod.im()}}.}
 }
 \value{
 If \code{boxes} is a list of numerical values then GBL is estimated for square boxes with side length given by \code{boxes}.
- The returned object is then an \code{fv} object containing estimates of GBL.
- If \code{boxes} is a list of \code{owin} objects then \code{gblg} returns a dataframe of with columns corresponding to estimates of GBL.
- 
- Note that if any values in the \code{paircorr} object needed for \code{gblg} are \code{NA} or \code{NaN} then \code{gblg} will return \code{NA} or \code{NaN}, respectively.
+The returned object is then an \code{fv} object containing estimates of GBL.
+If \code{boxes} is a list of \code{owin} objects then \code{gblg} returns a dataframe of with columns corresponding to estimates of GBL.
+
+Note that if any values in the \code{paircorr} object needed for \code{gblg} are \code{NA} or \code{NaN} then \code{gblg} will return \code{NA} or \code{NaN}, respectively.
 }
 \description{
 Estimates the gliding box lacunarity (GBL) of a stationary RACS by estimating pair-correlation from a binary map (Hingee et al., 2017).
- It can also calculate the GBL of a RACS from a provided pair-correlation function.
+It can also calculate the GBL of a RACS from a provided pair-correlation function.
 }
 \details{
 If we denote the estimated pair-correlation by \eqn{\hat{g}(v)}{g(v)} then the estimate of GBL is
@@ -31,28 +33,23 @@ where \eqn{B} is each of the sets (often called a box) specified by \code{boxes}
 \eqn{\gamma_B}{gammaB} is the set covariance of \eqn{B},
 \eqn{|B|} is the area of \eqn{B},
 \eqn{p} is the coverage probability of a stationary RACS.
-This can be used to compute the GBL from model parameters by passing \code{gblc} the 
+This can be used to compute the GBL from model parameters by passing \code{gblc} the
 covariance and coverage probability of the model.
 
 If the \code{xiim} argument to \code{gblg} is used then pair correlation is estimated from \code{xiim} using \code{\link{paircorr}} and the \code{pickaH} estimator.
 
 The set covariance of \eqn{B} is computed empirically using \pkg{spatstat}'s \code{\link[spatstat]{setcov}} function, which converts \eqn{B} into a binary pixel mask using \code{\link[spatstat]{as.mask}} defaults. Computation speed can be increased by setting a small default number of pixels, \code{npixel}, in \pkg{spatstat}'s global options (accessed through \code{\link[spatstat]{spatstat.options}}), however fewer pixels also decreases the accuracy of the GBL computation.
+
+The default integration method for this function uses \code{\link[cubature:cubintegrate]{cubature::cubintegrate()}} from the \pkg{cubature} package.
+The 'harmonisesum' integration method is known to produce numerical artefacts (Section 6.2 of (Hingee et al., 2019))
 }
 \examples{
 xi <- as.im(heather$coarse, na.replace = 0, eps = 4 * heather$coarse$xstep)
-pcln <- paircorr(xi, estimators = "pickaH", drop = TRUE)
-sidelengths <- seq(0.3, 14, by = 1)
+sidelengths <- seq(0.3, 14, by = 3)
 
 # reduce resolution in setcov() for faster (less accurate) computation 
 oldopt <- spatstat.options()
-spatstat.options("npixel" = 2^5)
-
-# compute GBL estimate for square boxes from estimated pair correlation 
-gblgest <- gblg(sidelengths, pcln)
-
-# compute GBL estimate for boxes that are discs
-discboxes <- lapply(sidelengths / 2, disc)
-discgbls <- gblg(discboxes, pcln)
+spatstat.options("npixel" = 2^4)
 
 # compute GBL estimates from binary map
 xiim <- as.im(xi, na.replace = 0)

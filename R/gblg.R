@@ -21,10 +21,14 @@
 #' 
 #' The set covariance of \eqn{B} is computed empirically using \pkg{spatstat}'s \code{\link[spatstat]{setcov}} function, which converts \eqn{B} into a binary pixel mask using \code{\link[spatstat]{as.mask}} defaults. Computation speed can be increased by setting a small default number of pixels, \code{npixel}, in \pkg{spatstat}'s global options (accessed through \code{\link[spatstat]{spatstat.options}}), however fewer pixels also decreases the accuracy of the GBL computation.
 #' 
+#' The default integration method for this function uses [cubature::cubintegrate()] from the \pkg{cubature} package.
+#' The 'harmonisesum' integration method is known to produce numerical artefacts (Section 6.2 of (Hingee et al., 2019))
+
 
 #' @param boxes Either a list of side lengths for square boxes or a list of \code{owin} objects of any shape.
 #' @param paircorr  A \code{im} object containing the pair-correlation function
 #' @param xiim An observation of a stationary RACS as an \code{im} object. \code{xiim} must have values of either 1, 0 or NA; 1 denotes inside the RACS, 0 denotes outside, and NA denotes unobserved.
+#' @param integrationMethod The integration method used by [innerprod.im()].
 
 #' @return If \code{boxes} is a list of numerical values then GBL is estimated for square boxes with side length given by \code{boxes}.
 #'  The returned object is then an \code{fv} object containing estimates of GBL.
@@ -34,20 +38,12 @@
 
 #' @examples
 #' xi <- as.im(heather$coarse, na.replace = 0, eps = 4 * heather$coarse$xstep)
-#' pcln <- paircorr(xi, estimators = "pickaH", drop = TRUE)
-#' sidelengths <- seq(0.3, 14, by = 1)
+#' sidelengths <- seq(0.3, 14, by = 3)
 #'
 #' # reduce resolution in setcov() for faster (less accurate) computation 
 #' oldopt <- spatstat.options()
-#' spatstat.options("npixel" = 2^5)
+#' spatstat.options("npixel" = 2^4)
 #' 
-#' # compute GBL estimate for square boxes from estimated pair correlation 
-#' gblgest <- gblg(sidelengths, pcln)
-#' 
-#' # compute GBL estimate for boxes that are discs
-#' discboxes <- lapply(sidelengths / 2, disc)
-#' discgbls <- gblg(discboxes, pcln)
-#'
 #' # compute GBL estimates from binary map
 #' xiim <- as.im(xi, na.replace = 0)
 #' gblgest <- gblg(sidelengths, xiim = xiim)
@@ -55,14 +51,14 @@
 #' spatstat.options(oldopt)
 #' 
 #' @keywords spatial nonparametric 
-gblg <- function(boxes, paircorr = NULL, xiim = NULL){
+gblg <- function(boxes, paircorr = NULL, xiim = NULL, integrationMethod = "cubature"){
   if (!(is.null(paircorr))){
     if (!is.null(xiim)){stop("xiim (an observation image) and paircorr were given. paircorr and xiim cannot be simultaneously supplied.")}
     lacv <- gblg.inputpaircorr(boxes, paircorr)
     unitname <- unitname(paircorr)
   } else if (!is.null(xiim)){
     paircorr <- paircorr(xiim, estimators = "pickaH", drop = TRUE)
-    lacv <- gblg.inputpaircorr(boxes, paircorr)
+    lacv <- gblg.inputpaircorr(boxes, paircorr, integrationMethod = integrationMethod)
     unitname <- unitname(xiim)
   } else {
     stop("Input requires specification of xiim or paircorr")
@@ -82,7 +78,7 @@ gblg <- function(boxes, paircorr = NULL, xiim = NULL){
   } else (return(lacv))
 }
 
-gblg.inputpaircorr <- function(boxes, paircorr){
+gblg.inputpaircorr <- function(boxes, paircorr, integrationMethod = "cubature"){
   stopifnot(is.im(paircorr))
   if (mode(boxes) %in% c("integer", "numeric")){
     squares <- lapply(boxes, square) #make into owin rectangles
@@ -96,7 +92,7 @@ gblg.inputpaircorr <- function(boxes, paircorr){
     boxarea <- unlist(boxarea)
   }
 
-  integrationresults <- mapply(innerprod.im, boxcov, list(paircorr - 1), outsideA = 0, outsideB = NA, na.rm = FALSE, SIMPLIFY = FALSE) # the list around the paircorr is necessary to stop mapply unlisting the image itself
+  integrationresults <- mapply(innerprod.im, boxcov, list(paircorr - 1), outsideA = 0, outsideB = NA, na.replace = TRUE, method = integrationMethod, SIMPLIFY = FALSE) # the list around the paircorr is necessary to stop mapply unlisting the image itself
 
   GBLest <- 1 + unlist(integrationresults) / (boxarea ^ 2) 
   return(GBLest)

@@ -2,10 +2,19 @@
 % Please edit documentation in R/gblcc.R
 \name{gblcc}
 \alias{gblcc}
+\alias{gblcc.inputcovar}
 \title{Centred covariance based estimates of gliding box lacunarity}
 \usage{
-gblcc(boxes, cencovar = NULL, p = NULL, xiim = NULL,
-  estimator = "pickaH")
+gblcc(
+  boxes,
+  cencovar = NULL,
+  p = NULL,
+  xiim = NULL,
+  estimator = "pickaH",
+  integrationMethod = "harmonisesum"
+)
+
+gblcc.inputcovar(boxes, cencovar, p, integrationMethod = "harmonisesum")
 }
 \arguments{
 \item{boxes}{Either a list of side lengths for square boxes or a list of \code{owin} objects of any shape.}
@@ -17,17 +26,19 @@ gblcc(boxes, cencovar = NULL, p = NULL, xiim = NULL,
 \item{xiim}{An observation of a stationary RACS as an \code{im} object. \code{xiim} must have values of either 1, 0 or NA; 1 denotes inside the RACS, 0 denotes outside, and NA denotes unobserved.}
 
 \item{estimator}{If an observation \code{xiim} is passed then \code{estimator} will select the balancing method that \code{ccvc} uses to estimate the centred covariance.}
+
+\item{integrationMethod}{The integration method used by \code{\link[=innerprod.im]{innerprod.im()}}. Default is 'harmonisesum' due centred covariance approaching zero for large vectors.}
 }
 \value{
 If \code{boxes} is a list of numerical values then GBL is estimated for square boxes with side length given by \code{boxes}.
- The returned object is then an \code{fv} object containing estimates of GBL, box mass variance and box mass mean.
- 
- If \code{boxes} is a list of \code{owin} objects then \code{gblcc} returns a dataframe of with columns corresponding to estimates of GBL, box mass variance and box mass mean.
- Note if \code{NA} or \code{NaN} values in the \code{covariance} object are used then \code{gblc} will return \code{NA} or \code{NaN} instead of an GBL value.
+The returned object is then an \code{fv} object containing estimates of GBL, box mass variance and box mass mean.
+
+If \code{boxes} is a list of \code{owin} objects then \code{gblcc} returns a dataframe of with columns corresponding to estimates of GBL, box mass variance and box mass mean.
+Note if \code{NA} or \code{NaN} values in the \code{covariance} object are used then \code{gblc} will return \code{NA} or \code{NaN} instead of an GBL value.
 }
 \description{
 Estimates the gliding box lacunarity (GBL) of a stationary RACS using centred covariance estimates (Hingee et al., 2017).
- The centred covariance and coverage probability can be provided or estimated from binary map.
+The centred covariance and coverage probability can be provided or estimated from binary map.
 }
 \details{
 If we denote the estimated centred covariance by
@@ -41,6 +52,11 @@ where \eqn{B} is each of the sets (often called a box) specified by \code{boxes}
 
 The set covariance of \eqn{B} is computed empirically using \pkg{spatstat}'s \code{\link[spatstat]{setcov}} function, which converts \eqn{B} into a binary pixel mask using \code{\link[spatstat]{as.mask}} defaults. Computation speed can be increased by setting a small default number of pixels, \code{npixel}, in \pkg{spatstat}'s global options (accessed through \code{\link[spatstat]{spatstat.options}}), however fewer pixels also decreases the accuracy of the GBL computation.
 }
+\section{Functions}{
+\itemize{
+\item \code{gblcc.inputcovar}: GBL estimates from already estimated centred covariance.
+}}
+
 \examples{
 xi <- heather$coarse
 cencovar <- cencovariance(xi, obswin = Frame(xi), estimators = c("pickaH"), drop = TRUE)
