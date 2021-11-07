@@ -1,4 +1,4 @@
-92be54692761b6e45717ea4f4a5f2ec7 *DESCRIPTION
+601c2273f132ce5bf7d43f2be0926bd8 *DESCRIPTION
 89e8cd7b2e3598721268b2feebb1a19a *NAMESPACE
 13b0c2e7968fb93f46b2be76ada55993 *NEWS
 a2b8a7d6cb90a1b1523f2dca5048b372 *R/ccvc.R
@@ -24,14 +24,14 @@ dd218b1d930e908e6c1a9fe5a5bd3e4a *R/rbpto.R
 5e73eb0070fc362f55ddbc3bc3722c5f *R/secondorderprops.R
 89cbcaabd7ffa3347967aaccff5820e6 *R/summaryimlist.R
 eb9ad0bff01a70321fc9cc7874dc4542 *README.md
-82f6a7f35afacf503bf865a92b7b1b20 *build/partial.rdb
+ad012e39d465c2dc772dcbebfc386ac8 *build/partial.rdb
 b6e32919960c876f1d38cab5884fed09 *build/vignette.rds
 89ec14700658e4d27e65e86870e60ccd *demo/00Index
 04a6d71b653ecd187459588ded668058 *demo/import_remote_sense_data.R
 e93bac4d5a0bb927891243d16392d258 *inst/CITATION
 bf381f57c6cd16cf23da7b496509e011 *inst/doc/estimate_RACS_properties.R
 768cb67c9362f10ecdfc4137e6e84b74 *inst/doc/estimate_RACS_properties.Rnw
-124706d92e26d079e4872e5c10027dbe *inst/doc/estimate_RACS_properties.pdf
+be40fd2321feab09b1dc24f0eaf65b4c *inst/doc/estimate_RACS_properties.pdf
 771792126e5e545ee50e7cd70339639f *inst/extdata/aregionofinterest.dbf
 cae8249a6907d06b218734c73a5d0ac7 *inst/extdata/aregionofinterest.prj
 e2dcf7f6f53503836e67b2e2e4f222c6 *inst/extdata/aregionofinterest.qpj
@@ -72,7 +72,7 @@ fac18e2f9deb39f852b34e7b5fae79bf *tests/testthat/test-cppicka.R
 25b0b7eb718f6eeabbdced75fccb03ec *tests/testthat/test-imbinaryops.R
 8fdad7bf849474bff7cd34916d926a23 *tests/testthat/test-innerprod.R
 9eadbe0f0d1837b8ad62bb7493d3bad5 *tests/testthat/test-rbdd.R
-0f627d39a980c38913869a3ca73551de *tests/testthat/test-rbdr.R
+5fe2a1b56b81b4c32d8477767005bc82 *tests/testthat/test-rbdr.R
 fec316c830634362476f9e3c2b2fa50c *tests/testthat/test-rblndr.R
 97fffb4d3de37017d62545cf14602bdc *tests/testthat/test-rbpto.R
 2ccafe15d6b8cff85c159f39b4686147 *tests/testthat/test-secondorderprops.R
