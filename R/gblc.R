@@ -93,7 +93,7 @@ gblc <- function(boxes, covariance = NULL, p = NULL, xiim = NULL, integrationMet
     #recommended xlim:
     alim.min <- 1
     alim.max <- min(which(vapply(lacsdf[, "GBL"], is.na, FUN.VALUE = TRUE)), nrow(lacsdf))
-    lacfv <- fv(lacsdf,
+    lacfv <- spatstat.explore::fv(lacsdf,
                 argu = "s",
                 valu = "GBL",
                 fmla = ".y ~ s",
@@ -111,7 +111,7 @@ gblc <- function(boxes, covariance = NULL, p = NULL, xiim = NULL, integrationMet
                 ),
                 fname = "GBL"
     )
-    fvnames(lacfv, a = ".") <- "GBL"
+    spatstat.explore::fvnames(lacfv, a = ".") <- "GBL"
     return(lacfv)
   } else (return(lacsdf))
 }

@@ -48,9 +48,9 @@ gblemp <- function(boxwidths, xiim, obswin = Frame(xiim)){
 #compute observation mask
   obsvd <- xiim
   obsvd[is.finite(xiim$v)] <- TRUE
-  if (class(obswin) == "im"){obsvd <- eval.im(obswin * obsvd)}
+  if (isa(obswin, "im")){obsvd <- eval.im(obswin * obsvd)}
   obsvd <- as.owin(obsvd) #owin format may not be needed anymore
-  if (class(obswin) == "owin"){obsvd <- intersect.owin(obsvd, obswin)}
+  if (isa(obswin, "owin")){obsvd <- intersect.owin(obsvd, obswin)}
 
   if (requireNamespace("RcppRoll") != TRUE){
      stop("RcppRoll package must be installed to calculate empirical gliding box lacunarity")
@@ -66,7 +66,7 @@ lacs <- mapply(gblemp_intern.rcpproll, sidep = 2 * rpix + 1, MoreArgs = list(xii
     #recommended xlim:
     alim.min <- 1
     alim.max <- min(which(vapply(lacsdf[, "GBL"], is.na, FUN.VALUE = TRUE)), nrow(lacsdf))
-    lacfv <- fv(lacsdf,
+    lacfv <- spatstat.explore::fv(lacsdf,
            argu = "s",
            valu = "GBL",
            fmla = ".y ~ s",
@@ -84,7 +84,7 @@ lacs <- mapply(gblemp_intern.rcpproll, sidep = 2 * rpix + 1, MoreArgs = list(xii
                     ),
            fname = "GBL"
            )
-    fvnames(lacfv, a = ".") <- "GBL"
+    spatstat.explore::fvnames(lacfv, a = ".") <- "GBL"
   return(lacfv)
 }
 

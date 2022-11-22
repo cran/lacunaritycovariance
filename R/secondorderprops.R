@@ -56,7 +56,7 @@ secondorderprops <- function(xiim,
     }
     if (("GBLemp" %in% gblargs[["estimators"]]) || is.null(gblargs[["estimators"]]) || ("all" %in% gblargs[["estimators"]])) {
       gblemp.est <- gblemp(boxwidths = gblargs[["boxwidths"]], xiim = xiim)
-      if (sum(!vapply(gblemp.est[,fvnames(gblemp.est), drop = TRUE], is.na, FUN.VALUE = TRUE)) < 2){
+      if (sum(!vapply(gblemp.est[,spatstat.explore::fvnames(gblemp.est), drop = TRUE], is.na, FUN.VALUE = TRUE)) < 2){
         warning("gblemp() returns estimates for 1 or fewer of the provided box widths. Results from gblemp() will be ignored from the final results.")
         gblemp.est <- NULL
       }
@@ -67,12 +67,12 @@ secondorderprops <- function(xiim,
     if (is.owin(gblargs[["boxwidths"]][[1]])){
       gbls <- do.call(cbind, args = gbl.ests)
     } else {
-      if (any(!vapply(gbl.ests[-1], function(x) compatible.fv(A = gbl.ests[[1]], B = x), FUN.VALUE = FALSE))){
+      if (any(!vapply(gbl.ests[-1], function(x) spatstat.explore::compatible.fv(A = gbl.ests[[1]], B = x), FUN.VALUE = FALSE))){
         warning("Some GBL estimates have differing argument values. These will be harmonised.")
-        gbl.ests <- harmonise.fv(gbl.ests)
+        gbl.ests <- spatstat.explore::harmonise.fv(gbl.ests)
       }
-      gbls <- collapse.fv(gbl.ests, different = "GBL")
-      names(gbls) <- c(fvnames(gbls, ".x"), names(gbl.ests))
+      gbls <- spatstat.explore::collapse.fv(gbl.ests, different = "GBL")
+      names(gbls) <- c(spatstat.explore::fvnames(gbls, ".x"), names(gbl.ests))
     }
     outlist <- c(outlist, list(GBL = gbls))
   }
@@ -82,12 +82,12 @@ secondorderprops <- function(xiim,
   if (!is.null(covarargs)) {
     cvchats <- do.call(racscovariance.cvchat, args = c(list(cvchat = cvchatT, cpp1 = cpp1, phat = phat), covarargs, drop = FALSE))
     if (returnrotmean){
-      isocovars <- lapply(cvchats, spatstat.core::rotmean, padzero = FALSE, Xname = "covar", result = "fv")
+      isocovars <- lapply(cvchats, spatstat.explore::rotmean, padzero = FALSE, Xname = "covar", result = "fv")
       isocovars <- lapply(isocovars, function(x) {
-        x <- tweak.fv.entry(x, "f", new.labl = "C(r)", new.desc = "isotropic covariance", new.tag = "C")
+        x <- spatstat.explore::tweak.fv.entry(x, "f", new.labl = "C(r)", new.desc = "isotropic covariance", new.tag = "C")
         return(x)
       })
-      isocovars <- collapse.fv(harmonise.fv(isocovars), different = "C")
+      isocovars <- spatstat.explore::collapse.fv(spatstat.explore::harmonise.fv(isocovars), different = "C")
       cvchats <- isocovars
     }
     outlist <- c(outlist, list(covariance = cvchats))
@@ -97,12 +97,12 @@ secondorderprops <- function(xiim,
   if (!is.null(cencovarargs)) {
     ccvchats <- do.call(cencovariance.cvchat, args = c(list(cvchat = cvchatT, cpp1 = cpp1, phat = phat), cencovarargs, drop = FALSE))
     if (returnrotmean){
-      isocencovars <- lapply(ccvchats, spatstat.core::rotmean, padzero = FALSE, Xname = "cencovar", result = "fv")
+      isocencovars <- lapply(ccvchats, spatstat.explore::rotmean, padzero = FALSE, Xname = "cencovar", result = "fv")
       isocencovars <- lapply(isocencovars, function(x) {
-        x <- tweak.fv.entry(x, "f", new.labl = "k(r)", new.desc = "isotropic centred covariance", new.tag = "C")
+        x <- spatstat.explore::tweak.fv.entry(x, "f", new.labl = "k(r)", new.desc = "isotropic centred covariance", new.tag = "C")
         return(x)
       })
-      isocencovars <- collapse.fv(harmonise.fv(isocencovars), different = "C")
+      isocencovars <- spatstat.explore::collapse.fv(spatstat.explore::harmonise.fv(isocencovars), different = "C")
       ccvchats <- isocencovars
     }
     outlist <- c(outlist, list(cencovariance = ccvchats))
@@ -112,12 +112,12 @@ secondorderprops <- function(xiim,
     pclnests <- do.call(paircorr.cvchat, c(list(cvchat = cvchatT, cpp1 = cpp1, phat = phat), paircorrargs, drop = FALSE))
     #compute isotropic pair correlation
     if (returnrotmean){
-      isopclns <- lapply(pclnests, spatstat.core::rotmean, padzero = FALSE, Xname = "paircorr", result = "fv")
+      isopclns <- lapply(pclnests, spatstat.explore::rotmean, padzero = FALSE, Xname = "paircorr", result = "fv")
       isopclns <- lapply(isopclns, function(x) {
-        x <- tweak.fv.entry(x, "f", new.labl = "g(r)", new.desc = "isotropic pair-correlation", new.tag = "g")
+        x <- spatstat.explore::tweak.fv.entry(x, "f", new.labl = "g(r)", new.desc = "isotropic pair-correlation", new.tag = "g")
         return(x)
       })
-      isopclns <- collapse.fv(harmonise.fv(isopclns), different = "g")
+      isopclns <- spatstat.explore::collapse.fv(spatstat.explore::harmonise.fv(isopclns), different = "g")
       pclnests <- isopclns
     }
     outlist <- c(outlist, list(paircorr = pclnests))
