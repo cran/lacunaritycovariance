@@ -11,12 +11,7 @@ opa <- par(mfrow=c(1,1))
 # format into a format suitable for the package lacunaritycovariance.
 
 # For this demo you will need the following R packages installed: 
-#  rgdal You will need to install GDAL (http://www.gdal.org/)
-#        first which is available for Windows, Mac and Linux.
-#        An easy installation of GDAL on Windows is through
-#        installing OSGeo4W (http://trac.osgeo.org/osgeo4w/).
-#  maptools
-#  raster
+#  raster (and terra)
 #  spatstat
 
 # The goal is to have 
@@ -29,24 +24,19 @@ load(system.file("extdata/egbinarymap.RData", package="lacunaritycovariance"))
 plot(egbinarymap, col = c("grey", "black"), main = "The Final Result of This Demo")
 rm(egbinarymap)
 
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# 1. Reading ESRI Shapefile in SpatialPolygonsDataFrame #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-library("rgdal") # rgdal is used here to read the ESRI shapefile into a SpatialPolygonsDataFrame
-regionfilepath <- system.file("extdata", package="lacunaritycovariance")
-obspoly <- readOGR(regionfilepath, "aregionofinterest", verbose = FALSE)
-#For ESRI Shapefiles:
-#   the first argument of readOGR is the directory containing the shape files
-#   the second argument of readOGR is the filename without extension
+# # # # # # # # # # # # # # # # # # # # # #
+# 1. Reading ESRI Shapefile in SF Object  #
+# # # # # # # # # # # # # # # # # # # # # #
+regionfilepath <- system.file("extdata/aregionofinterest.shp", package="lacunaritycovariance")
+obspoly <- sf::st_read(regionfilepath)
 #print the coordinate projection of the polygon data for sanity
-plot(obspoly, main = "Observation Window as a SpatialPolygonsDataFrame")
+plot(obspoly, main = "Observation Window as a SF Object")
 
 
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# 2.Converting Observation Window as SpatialPolygonsDataFrame into owin Format  #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-library("maptools") # maptools is used to convert a SpatialPolygonsDataFrame into an owin object
-obsowin <- as.owin(obspoly) #only step that requires maptools
+# # # # # # # # # # # # # # # # # # # # # # # # # # #
+# 2.Converting Observation Window into owin Format  #
+# # # # # # # # # # # # # # # # # # # # # # # # # # #
+obsowin <- as.owin(obspoly) 
 unitname(obsowin) <- c("metre", "metres") #manually set units
 plot(obsowin,
      main = "Observation Window as owin",axes=TRUE)
@@ -55,7 +45,7 @@ plot(obsowin,
 # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # 3. Extracting Raster Data for Observation Window  #
 # # # # # # # # # # # # # # # # # # # # # # # # # # #
-library("raster") # reads in remotely sensed raster data in a wide variety of formats.
+library("terra") # reads in remotely sensed raster data in a wide variety of formats.
 #### First unzip the example raster data
 #(raster data was compressed in a zip to save space)
 rsdatafilepath <- system.file("extdata/demorsraster.zip",
@@ -63,20 +53,22 @@ rsdatafilepath <- system.file("extdata/demorsraster.zip",
 rsfiles <- unzip(rsdatafilepath,exdir=tempdir())
 
 #### Open raster data file (this does not read the raster data)
-xidataset<-raster(rsfiles[[2]])
+xidataset<-terra::rast(rsfiles[[2]])
 # if the above doesn't load you may need to try opening rsfiles[[1]]
 # (this may just be due to a filename extention convention)
 
 #### Reads in the smallest rectangle possible around the observation window
-xidataset <- crop(xidataset,extent(obspoly))
+xidataset <- crop(xidataset,obspoly)
 plot(xidataset, main="Raster Map around Observation Window")
-plot(add=TRUE, obsbdry, lwd = 3)
+plot(add=TRUE, obspoly, lwd = 3, col = NA)
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # #
 # 4. Convert Raster Data into spatstat im Object  #
 # # # # # # # # # # # # # # # # # # # # # # # # # #
-xiimage <- as.im.RasterLayer(xidataset) # uses package maptools
+# As of Jan 2023, the below is the best method I'm aware of for converting to a spatstat image object, it uses a hidden function in the envi package.
+# The previous method used the maptools package, which will soon be obsolete.
+xiimage <- envi:::as.im.SpatRaster(xidataset)
 unitname(xiimage) <- c("metre","metres") # manually set units
 # remove raster data outside observation window:
 xiimage[setminus.owin(Frame(xiimage), obsowin)] <- NA
