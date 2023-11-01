@@ -1,6 +1,6 @@
-5141a89a6038826f3dcbd3332fe2c7e4 *DESCRIPTION
+ac132908d49afab934f6fb92af2a188e *DESCRIPTION
 c2ac7d1835c8d7a8c764abceb1ae40a3 *NAMESPACE
-33b1bdec07f887c16c258b69e9e9561f *NEWS
+50f7b154c37aa41ed9ffc883243b7245 *NEWS
 a2b8a7d6cb90a1b1523f2dca5048b372 *R/ccvc.R
 00917ab0a9d7aad543887c28578399ca *R/contagdiscstate.R
 d76210632348df51868cc174b0025b45 *R/contagpixelgrid.R
@@ -13,6 +13,7 @@ e04772fdb45861622c6782c69192cf10 *R/gblcc.R
 fadfe57e18cf8d009a92b2e8103a3195 *R/gblg.R
 256a647f55b679c5ff7c36517767195c *R/innerprodim.R
 9c090e536a2be9f5e06ff4911d9b443c *R/isbinarymap.R
+cd8255df8d2df9993f06253f45af7eb5 *R/lacunaritycovariance-package.R
 e21a7e7746435e2c31f3943204d96a7b *R/pcln.R
 f4e2b644a065751e654b86107aff1020 *R/placegrainsfromlib.R
 08fe67f3ab3deda6708f24ea9eddfbdd *R/plugincvc.R
@@ -24,14 +25,14 @@ dd218b1d930e908e6c1a9fe5a5bd3e4a *R/rbpto.R
 dd358f4e5795fb3f8cb4034f95b3ee51 *R/secondorderprops.R
 89cbcaabd7ffa3347967aaccff5820e6 *R/summaryimlist.R
 eb9ad0bff01a70321fc9cc7874dc4542 *README.md
-f9537de933f8c69347441e0a2fa69389 *build/partial.rdb
-c07fff8dcf7408e5a2310b5c91417da2 *build/vignette.rds
+7080893e02c49cd296d4424b9be55069 *build/partial.rdb
+d237d8ee7d1e5b57f66b51eb7d8390d7 *build/vignette.rds
 89ec14700658e4d27e65e86870e60ccd *demo/00Index
-af2445f2e986bf3b9b3db7994aec590a *demo/import_remote_sense_data.R
+924f8fea2b31b76844962427586d7249 *demo/import_remote_sense_data.R
 e93bac4d5a0bb927891243d16392d258 *inst/CITATION
 bf381f57c6cd16cf23da7b496509e011 *inst/doc/estimate_RACS_properties.R
 768cb67c9362f10ecdfc4137e6e84b74 *inst/doc/estimate_RACS_properties.Rnw
-73146b66f15b6e81ae89b8cc421c143d *inst/doc/estimate_RACS_properties.pdf
+8e190eff57300066200ba0d2cdfc4ea2 *inst/doc/estimate_RACS_properties.pdf
 771792126e5e545ee50e7cd70339639f *inst/extdata/aregionofinterest.dbf
 cae8249a6907d06b218734c73a5d0ac7 *inst/extdata/aregionofinterest.prj
 e2dcf7f6f53503836e67b2e2e4f222c6 *inst/extdata/aregionofinterest.qpj
@@ -51,7 +52,7 @@ a56ebbe896c2de3f0f80b727f52e126a *man/gblemp.Rd
 491ea55892d018ca831b62828e200d92 *man/gblg.Rd
 764fe6da22031f32a863d3e14491ab6e *man/innerprod.im.Rd
 d79a8372e83a15f4ddb5d87e0af43a5b *man/isbinarymap.Rd
-5fac06a08d53bb25bd9156428546a45a *man/lacunaritycovariance-package.Rd
+849174e066547ddd35cfef3263365ca3 *man/lacunaritycovariance-package.Rd
 2331e4a64dbd160cc527369efabd79c7 *man/paircorr.Rd
 70e63488d1d83ed1c1aca8f5d6329b3f *man/placegrainsfromlib.Rd
 31b8eecd2fbd70c8843776645f68e2cb *man/plugincvc.Rd
