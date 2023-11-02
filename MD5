@@ -1,6 +1,6 @@
-ac132908d49afab934f6fb92af2a188e *DESCRIPTION
+bd15604399b8a78265cd2adecba85676 *DESCRIPTION
 c2ac7d1835c8d7a8c764abceb1ae40a3 *NAMESPACE
-50f7b154c37aa41ed9ffc883243b7245 *NEWS
+411be4a0f60cc388ff1b6c21faaccc21 *NEWS
 a2b8a7d6cb90a1b1523f2dca5048b372 *R/ccvc.R
 00917ab0a9d7aad543887c28578399ca *R/contagdiscstate.R
 d76210632348df51868cc174b0025b45 *R/contagpixelgrid.R
@@ -32,7 +32,7 @@ d237d8ee7d1e5b57f66b51eb7d8390d7 *build/vignette.rds
 e93bac4d5a0bb927891243d16392d258 *inst/CITATION
 bf381f57c6cd16cf23da7b496509e011 *inst/doc/estimate_RACS_properties.R
 768cb67c9362f10ecdfc4137e6e84b74 *inst/doc/estimate_RACS_properties.Rnw
-8e190eff57300066200ba0d2cdfc4ea2 *inst/doc/estimate_RACS_properties.pdf
+20d860b7353b26df4d8a82e49e113b4c *inst/doc/estimate_RACS_properties.pdf
 771792126e5e545ee50e7cd70339639f *inst/extdata/aregionofinterest.dbf
 cae8249a6907d06b218734c73a5d0ac7 *inst/extdata/aregionofinterest.prj
 e2dcf7f6f53503836e67b2e2e4f222c6 *inst/extdata/aregionofinterest.qpj
@@ -75,7 +75,7 @@ fac18e2f9deb39f852b34e7b5fae79bf *tests/testthat/test-cppicka.R
 9eadbe0f0d1837b8ad62bb7493d3bad5 *tests/testthat/test-rbdd.R
 328854f42c3f0aefbe7a31d8e41d91eb *tests/testthat/test-rbdr.R
 fec316c830634362476f9e3c2b2fa50c *tests/testthat/test-rblndr.R
-97fffb4d3de37017d62545cf14602bdc *tests/testthat/test-rbpto.R
+7190900be3a5d3d3efb35ae30041d421 *tests/testthat/test-rbpto.R
 2ccafe15d6b8cff85c159f39b4686147 *tests/testthat/test-secondorderprops.R
 7f4b17f0f1d523fa672428f8fc18edfd *tests/testthat/test-summaryimlist.R
 c76b3c11af78548fc8a713242e5dfa85 *tests/testthat/test-xiinputs.R

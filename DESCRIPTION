@@ -2,8 +2,8 @@ Type: Package
 Package: lacunaritycovariance
 Title: Gliding Box Lacunarity and Other Metrics for 2D Random Closed
         Sets
-Version: 1.1-6
-Date: 2023-10-31
+Version: 1.1-7
+Date: 2023-11-02
 Author: Kassel Liam Hingee
 Maintainer: Kassel Liam Hingee <kassel.hingee@gmail.com>
 Description: Functions for estimating the gliding box lacunarity (GBL),
@@ -31,6 +31,6 @@ Suggests: cubature, sf, terra, testthat
 ByteCompile: true
 RoxygenNote: 7.2.3
 NeedsCompilation: no
-Packaged: 2023-11-01 01:07:16 UTC; kassel
+Packaged: 2023-11-01 21:58:39 UTC; kassel
 Repository: CRAN
-Date/Publication: 2023-11-01 05:00:15 UTC
+Date/Publication: 2023-11-02 13:10:07 UTC
